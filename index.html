@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Exam P Mastery is the ultimate interactive learning platform for the SOA Exam P. Features randomized questions, flashcards, and a complete syllabus textbook to help you pass with flying colors.">
+    
+    <!-- Open Graph SEO -->
+    <meta property="og:title" content="Exam P Mastery | Premium LMS">
+    <meta property="og:description" content="Exam P Mastery is the ultimate interactive learning platform for the SOA Exam P. Features randomized questions, flashcards, and a complete syllabus textbook.">
+    <meta property="og:type" content="website">
+
+    <title>Exam P Mastery | Premium LMS</title>
+    
+    <!-- Favicon Placeholder -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📈</text></svg>">
+    
+    <!-- CSS and Fonts -->
+    <link rel="preload" href="assets/inter.css" as="style">
+    <link rel="stylesheet" href="assets/inter.css">
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="assets/mathjax/tex-mml-chtml.js"></script>
+
+    <!-- Load data and shared logic -->
+    <script defer src="data/core_init.js"></script>
+    <script defer src="data/textbook.js"></script>
+    <script defer src="data/flashcards.js"></script>
+    <script defer src="data/questions_1.js"></script>
+    <script defer src="data/questions_2.js"></script>
+    <script defer src="data/questions_3.js"></script>
+    <script defer src="data/questions_4.js"></script>
+    <script defer src="data/questions_5.js"></script>
+    <script defer src="data/questions_6.js"></script>
+    <script defer src="data/questions_7.js"></script>
+    <script defer src="data/flashcards_advanced.js"></script>
+    <script defer src="shared.js"></script>
+</head>
+<body>
+
+    <header>
+        <div>
+            <h2 class="logo-text">Exam P Mastery</h2>
+        </div>
+        <div class="nav-buttons">
+            <button class="nav-link active" onclick="navigateTo('dashboard')">Dashboard</button>
+            <button class="nav-link" onclick="navigateTo('textbook')">Textbook</button>
+            <button class="nav-link" onclick="navigateTo('quiz')">Quiz Engine</button>
+            <button class="nav-link" onclick="navigateTo('flashcards')">Flashcards</button>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-content active" style="display: block;">
+            <div class="card">
+                <h1>Study Dashboard</h1>
+                <p>Welcome back. Track your progression through the Exam P curriculum.</p>
+                
+                <h2>Overall Textbook Progress</h2>
+                <div class="progress-bg">
+                    <div id="dashboard-progress" class="progress-fill">0%</div>
+                </div>
+
+                <h2>Recent Quiz Scores</h2>
+                <div id="dashboard-scores">
+                    <p>No quizzes taken yet.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TEXTBOOK VIEW -->
+        <div id="view-textbook" class="view-content" style="display: none;">
+            <div class="card">
+                <h1>Interactive Textbook</h1>
+                <p>Complete coverage of the SOA Exam P Syllabus. Mark chapters complete as you finish them.</p>
+                <div id="textbook-content">
+                    <!-- Chapters injected via JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- QUIZ VIEW -->
+        <div id="view-quiz" class="view-content" style="display: none;">
+            <div class="card">
+                <h1>Exam P Simulator</h1>
+                
+                <div class="btn-group" id="quiz-tabs">
+                    <button id="tab-quiz-setup" class="btn" onclick="showQuizSetup()">Take Quiz</button>
+                    <button id="tab-quiz-mock" class="btn btn-outline" onclick="showMockExamSetup()">Mock Exam</button>
+                    <button id="tab-quiz-index" class="btn btn-outline" onclick="renderQuizIndex()">View Question Index</button>
+                </div>
+
+                <div id="quiz-setup">
+                    <p>Ready to test your knowledge under pressure?</p>
+                    <button class="btn" onclick="startQuiz()">Start Randomized Quiz</button>
+                </div>
+                
+                <div id="quiz-index-view" style="display: none;">
+                    <p>Browse all available master questions. Click to review.</p>
+                    <div id="quiz-grid" class="index-grid">
+                        <!-- Quiz Index Injected Here -->
+                    </div>
+                </div>
+
+                <div id="quiz-active" style="display: none;">
+                    <h3 id="quiz-question-number">Question</h3>
+                    <p id="quiz-question-text" style="font-size: 1.1rem; margin-bottom: 1.5rem;"></p>
+                    <div id="quiz-options"></div>
+                    <div id="quiz-explanation" class="explanation-box"></div>
+                    
+                    <div style="margin-top: 1.5rem;">
+                        <button id="quiz-next-btn" class="btn" style="display:none;" onclick="nextQuestion()">Next Question</button>
+                        <button id="quiz-return-idx-btn" class="btn btn-outline" style="display:none;" onclick="renderQuizIndex()">Return to Index</button>
+                    </div>
+                </div>
+                
+                <div id="quiz-results" style="display: none;">
+                    <h2>Quiz Complete!</h2>
+                    <p id="quiz-final-score" style="font-size: 1.5rem;"></p>
+                    <button class="btn" onclick="navigateTo('dashboard')" style="margin-top: 1rem;">Return to Dashboard</button>
+                </div>
+
+                <div id="quiz-mock-setup" style="display: none;">
+                    <p>Simulate the exact conditions of the Prometric testing center. You will have 3 hours to complete 30 randomized questions. Answers will not be revealed until you submit the exam.</p>
+                    <button class="btn" style="background: var(--color-error); border-color: var(--color-error);" onclick="startMockExam()">Start 3-Hour Mock Exam</button>
+                </div>
+
+                <div id="quiz-mock-active" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 1rem;">
+                        <h3 id="mock-question-number" style="margin:0;">Question</h3>
+                        <h3 id="mock-timer" style="margin:0; color: var(--color-error); font-variant-numeric: tabular-nums;">03:00:00</h3>
+                    </div>
+                    <p id="mock-question-text" style="font-size: 1.1rem; margin-bottom: 1.5rem;"></p>
+                    <div id="mock-options"></div>
+                    
+                    <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+                        <div>
+                            <button id="mock-prev-btn" class="btn btn-outline" onclick="mockPrevQuestion()">Previous</button>
+                            <button id="mock-next-btn" class="btn btn-outline" onclick="mockNextQuestion()">Next</button>
+                        </div>
+                        <button class="btn" style="background: var(--color-error); border-color: var(--color-error);" onclick="submitMockExam()">Submit Exam</button>
+                    </div>
+                    
+                    <div id="mock-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(10, 1fr); gap: 0.5rem; justify-items: center;">
+                        <!-- Navigation grid injected here -->
+                    </div>
+                </div>
+                
+                <div id="quiz-mock-results" style="display: none;">
+                    <h2>Mock Exam Complete</h2>
+                    <h3 id="mock-final-score" style="margin-bottom: 1rem;"></h3>
+                    <button class="btn" onclick="showQuizSetup()">Return to Setup</button>
+                    <button class="btn btn-outline" onclick="renderMockReview()">Review Incorrect</button>
+                    <div id="mock-review-container" style="margin-top: 1.5rem; display: none; text-align: left;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FLASHCARDS VIEW -->
+        <div id="view-flashcards" class="view-content" style="display: none;">
+            <div class="card">
+                <h1>Active Recall Flashcards</h1>
+                
+                <div class="btn-group">
+                    <button id="tab-flash-study" class="btn" onclick="startFlashcards()">Study Cards</button>
+                    <button id="tab-flash-index" class="btn btn-outline" onclick="renderFlashcardIndex()">View Card Index</button>
+                </div>
+
+                <div id="flashcard-index-view" style="display: none;">
+                    <p>Browse all available flashcards.</p>
+                    <div id="flashcard-grid" class="index-grid">
+                        <!-- Flashcard Index Injected Here -->
+                    </div>
+                </div>
+
+                <div id="flashcard-active-view">
+                    <p style="text-align: center;">Click the card to reveal the answer.</p>
+                    <div class="flashcard-container">
+                        <div id="active-flashcard" class="flashcard" onclick="flipCard()">
+                            <div class="flashcard-face" id="flashcard-front">
+                                <!-- Front Content -->
+                            </div>
+                            <div class="flashcard-face flashcard-back" id="flashcard-back">
+                                <!-- Back Content -->
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: center; margin-top: 1rem;">
+                        <span id="flashcard-progress" style="color: var(--color-text-muted);"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // -- Navigation --
+        function navigateTo(viewId) {
+            document.querySelectorAll('.view-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('view-' + viewId).style.display = 'block';
+            event.currentTarget.classList.add('active');
+            
+            if (viewId === 'dashboard') updateDashboard();
+            if (viewId === 'textbook') renderTextbook();
+            if (viewId === 'quiz') showQuizSetup();
+            if (viewId === 'flashcards') startFlashcards();
+            
+            renderMath();
+        }
+
+        // -- Dashboard Logic --
+        function updateDashboard() {
+            const progress = loadProgress();
+            
+            const totalChapters = window.appData.chapters.length;
+            const completed = progress.chaptersRead.length;
+            const pct = totalChapters > 0 ? Math.round((completed / totalChapters) * 100) : 0;
+            const fill = document.getElementById('dashboard-progress');
+            fill.style.width = pct + '%';
+            fill.innerText = pct + '%';
+
+            const scoresDiv = document.getElementById('dashboard-scores');
+            if (progress.quizScores.length > 0) {
+                let html = '<ul style="list-style-position: inside;">';
+                progress.quizScores.slice().reverse().slice(0, 5).forEach(q => {
+                    const d = new Date(q.date).toLocaleDateString();
+                    html += `<li>Score: <strong style="color: var(--color-primary-500);">${q.score}/${q.total}</strong> on ${d}</li>`;
+                    if (q.topicData) {
+                        html += `<ul style="font-size: 0.85rem; margin-left: 1.5rem; margin-bottom: 0.5rem; padding-left: 0;">`;
+                        for (const [topic, stats] of Object.entries(q.topicData)) {
+                            const pct = Math.round((stats.correct / stats.total) * 100);
+                            const color = pct >= 70 ? 'var(--color-success)' : (pct >= 50 ? 'var(--color-warning)' : 'var(--color-error)');
+                            html += `<li>${topic}: <span style="color: ${color}; font-weight: bold;">${pct}%</span> (${stats.correct}/${stats.total})</li>`;
+                        }
+                        html += `</ul>`;
+                    }
+                });
+                html += '</ul>';
+                scoresDiv.innerHTML = html;
+            }
+        }
+
+        // -- Textbook Logic --
+        function renderTextbook() {
+            const container = document.getElementById('textbook-content');
+            const progress = loadProgress();
+            
+            let html = '';
+            window.appData.chapters.forEach(ch => {
+                const isRead = progress.chaptersRead.includes(ch.id);
+                html += `
+                    <div style="margin-top: 3rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
+                        <h2>${ch.title} ${isRead ? '<span class="badge low">Completed</span>' : ''}</h2>
+                        <div style="margin-top: 1rem; margin-bottom: 1.5rem;">${ch.content}</div>
+                        ${!isRead 
+                            ? `<button class="btn" onclick="toggleChapter('${ch.id}', true)">Mark as Completed</button>` 
+                            : `<button class="btn btn-danger" onclick="toggleChapter('${ch.id}', false)">Mark as Incomplete</button>`}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            renderMath();
+        }
+
+        function toggleChapter(id, markComplete) {
+            if (markComplete) markChapterRead(id);
+            else markChapterUnread(id);
+            renderTextbook();
+        }
+
+        // -- Quiz Engine Logic --
+        let currentQuizQuestions = [];
+        let currentQuizIndex = 0;
+        let score = 0;
+        let isReviewMode = false;
+
+        function showQuizSetup() {
+            document.getElementById('quiz-setup').style.display = 'block';
+            document.getElementById('quiz-index-view').style.display = 'none';
+            document.getElementById('quiz-active').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            
+            document.getElementById('quiz-mock-setup').style.display = 'none';
+            document.getElementById('quiz-mock-active').style.display = 'none';
+            document.getElementById('quiz-mock-results').style.display = 'none';
+            
+            document.getElementById('tab-quiz-setup').className = 'btn';
+            document.getElementById('tab-quiz-mock').className = 'btn btn-outline';
+            document.getElementById('tab-quiz-index').className = 'btn btn-outline';
+        }
+        
+        function showMockExamSetup() {
+            document.getElementById('quiz-setup').style.display = 'none';
+            document.getElementById('quiz-index-view').style.display = 'none';
+            document.getElementById('quiz-active').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            
+            document.getElementById('quiz-mock-setup').style.display = 'block';
+            document.getElementById('quiz-mock-active').style.display = 'none';
+            document.getElementById('quiz-mock-results').style.display = 'none';
+            
+            document.getElementById('tab-quiz-setup').className = 'btn btn-outline';
+            document.getElementById('tab-quiz-mock').className = 'btn';
+            document.getElementById('tab-quiz-index').className = 'btn btn-outline';
+        }
+
+        function toggleQMastered(id) {
+            toggleQuestionMastered(id);
+            renderQuizIndex();
+        }
+
+        function toggleFMastered(index) {
+            toggleFlashcardMastered(index);
+            renderFlashcardIndex();
+        }
+
+        function renderQuizIndex() {
+            document.getElementById('quiz-setup').style.display = 'none';
+            document.getElementById('quiz-active').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'none';
+            
+            document.getElementById('quiz-mock-setup').style.display = 'none';
+            document.getElementById('quiz-mock-active').style.display = 'none';
+            document.getElementById('quiz-mock-results').style.display = 'none';
+            
+            document.getElementById('quiz-index-view').style.display = 'block';
+            
+            document.getElementById('tab-quiz-setup').className = 'btn btn-outline';
+            document.getElementById('tab-quiz-mock').className = 'btn btn-outline';
+            document.getElementById('tab-quiz-index').className = 'btn';
+            
+            const progress = loadProgress();
+            const grid = document.getElementById('quiz-grid');
+            let html = '';
+            window.appData.questions.forEach((q, idx) => {
+                const isMastered = (progress.questionsMastered || []).includes(q.id);
+                html += `
+                    <div class="index-card ${isMastered ? 'mastered' : ''}" onclick="jumpToQuestion(${idx})">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Question ${idx + 1}</h3>
+                            <button class="btn btn-outline ${isMastered ? 'btn-success' : ''}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="event.stopPropagation(); toggleQMastered('${q.id}')">${isMastered ? 'Mastered ✓' : 'Mark Complete'}</button>
+                        </div>
+                        <span class="badge topic">${q.topic}</span>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${q.text.replace(/<[^>]*>?/gm, '')}
+                        </p>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+        }
+
+        function startQuiz() {
+            const progress = loadProgress();
+            const unmastered = window.appData.questions.filter(q => !(progress.questionsMastered || []).includes(q.id));
+            if(unmastered.length === 0) {
+                alert('All questions are marked as complete! Unmark some in the Question Index to take a quiz.');
+                return;
+            }
+            
+            const shuffled = [...unmastered].sort(() => 0.5 - Math.random());
+            currentQuizQuestions = shuffled.slice(0, 3);
+            currentQuizIndex = 0;
+            score = 0;
+            isReviewMode = false;
+            
+            document.getElementById('quiz-setup').style.display = 'none';
+            document.getElementById('quiz-active').style.display = 'block';
+            loadQuizQuestion();
+        }
+
+        function jumpToQuestion(globalIndex) {
+            // Load specific question in review mode
+            currentQuizQuestions = [window.appData.questions[globalIndex]];
+            currentQuizIndex = 0;
+            isReviewMode = true;
+            
+            document.getElementById('quiz-index-view').style.display = 'none';
+            document.getElementById('quiz-active').style.display = 'block';
+            
+            document.getElementById('tab-quiz-setup').className = 'btn';
+            document.getElementById('tab-quiz-index').className = 'btn btn-outline';
+            
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const q = currentQuizQuestions[currentQuizIndex];
+            document.getElementById('quiz-question-number').innerHTML = 
+                isReviewMode ? `Reviewing: ${q.topic}` : `Question ${currentQuizIndex + 1} of ${currentQuizQuestions.length} <span class="badge topic">${q.topic}</span>`;
+            document.getElementById('quiz-question-text').innerHTML = q.text;
+            
+            const optionsDiv = document.getElementById('quiz-options');
+            let optsHtml = '';
+            q.options.forEach((opt, idx) => {
+                optsHtml += `<button class="quiz-option" id="opt-${idx}" onclick="selectAnswer(${idx})">${opt}</button>`;
+            });
+            optionsDiv.innerHTML = optsHtml;
+            
+            document.getElementById('quiz-explanation').style.display = 'none';
+            document.getElementById('quiz-next-btn').style.display = 'none';
+            document.getElementById('quiz-return-idx-btn').style.display = isReviewMode ? 'inline-block' : 'none';
+            renderMath();
+        }
+
+        function selectAnswer(selectedIndex) {
+            const q = currentQuizQuestions[currentQuizIndex];
+            const isCorrect = (selectedIndex === q.correctAnswer);
+            
+            document.querySelectorAll('.quiz-option').forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.correctAnswer) btn.classList.add('correct');
+                else if (idx === selectedIndex) btn.classList.add('incorrect');
+            });
+            
+            if (isCorrect && !isReviewMode) score++;
+            
+            const expDiv = document.getElementById('quiz-explanation');
+            expDiv.innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong><br><br>${q.explanation}`;
+            expDiv.style.display = 'block';
+            
+            if (!isReviewMode) {
+                document.getElementById('quiz-next-btn').style.display = 'inline-block';
+            }
+            renderMath();
+        }
+
+        function nextQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < currentQuizQuestions.length) {
+                loadQuizQuestion();
+            } else {
+                endQuiz();
+            }
+        }
+
+        function endQuiz() {
+            document.getElementById('quiz-active').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'block';
+            document.getElementById('quiz-final-score').innerHTML = `You scored <span style="color: var(--color-primary-500);">${score}</span> out of ${currentQuizQuestions.length}.`;
+            recordQuizScore(score, currentQuizQuestions.length);
+        }
+
+        // -- Flashcard Logic --
+        let activeFlashcards = [];
+        let currentActiveIndex = 0;
+        
+        function startFlashcards() {
+            const progress = loadProgress();
+            activeFlashcards = window.appData.flashcards.map((c, i) => ({data: c, index: i}))
+                               .filter(c => !(progress.flashcardsMastered || []).includes(c.index));
+            
+            if(activeFlashcards.length === 0) {
+                alert('All flashcards mastered! Unmark some in the Card Index to study.');
+                return;
+            }
+            
+            document.getElementById('flashcard-index-view').style.display = 'none';
+            document.getElementById('flashcard-active-view').style.display = 'block';
+            
+            document.getElementById('tab-flash-study').className = 'btn';
+            document.getElementById('tab-flash-index').className = 'btn btn-outline';
+            
+            currentActiveIndex = 0;
+            loadFlashcard();
+        }
+
+        function renderFlashcardIndex() {
+            document.getElementById('flashcard-active-view').style.display = 'none';
+            document.getElementById('flashcard-index-view').style.display = 'block';
+            
+            document.getElementById('tab-flash-study').className = 'btn btn-outline';
+            document.getElementById('tab-flash-index').className = 'btn';
+            
+            const progress = loadProgress();
+            const grid = document.getElementById('flashcard-grid');
+            let html = '';
+            window.appData.flashcards.forEach((card, idx) => {
+                const isMastered = (progress.flashcardsMastered || []).includes(idx);
+                html += `
+                    <div class="index-card ${isMastered ? 'mastered' : ''}" onclick="jumpToFlashcard(${idx})">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Card ${idx + 1}</h3>
+                            <button class="btn btn-outline ${isMastered ? 'btn-success' : ''}" style="padding: 0.25rem 0.5rem; font-size: 0.75rem;" onclick="event.stopPropagation(); toggleFMastered(${idx})">${isMastered ? 'Mastered ✓' : 'Mark Complete'}</button>
+                        </div>
+                        <p style="margin-top: 0.5rem; font-size: 0.85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            ${card.front.replace(/<[^>]*>?/gm, '')}
+                        </p>
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            renderMath();
+        }
+
+        function jumpToFlashcard(index) {
+            document.getElementById('flashcard-index-view').style.display = 'none';
+            document.getElementById('flashcard-active-view').style.display = 'block';
+            
+            document.getElementById('tab-flash-study').className = 'btn';
+            document.getElementById('tab-flash-index').className = 'btn btn-outline';
+            
+            activeFlashcards = [{data: window.appData.flashcards[index], index: index}];
+            currentActiveIndex = 0;
+            loadFlashcard();
+        }
+        
+        function loadFlashcard() {
+            if(activeFlashcards.length === 0) return;
+            const cardData = activeFlashcards[currentActiveIndex].data;
+            
+            document.getElementById('flashcard-front').innerHTML = `<div style="flex: 1; display: flex; align-items: center; justify-content: center; overflow-y: auto; width: 100%; padding: 1rem 0;"><div>${cardData.front}</div></div>`;
+            const backHtml = `
+                <div style="flex: 1 1 auto; overflow-y: auto; width: 100%; display: flex; flex-direction: column; justify-content: center; padding: 1rem 0;"><div>${cardData.back}</div></div>
+                <div style="flex: 0 0 auto; margin-top: 1rem; width: 100%;">
+                    <button class="btn btn-outline" onclick="nextCard(event)">Next Card ➔</button>
+                </div>
+            `;
+            document.getElementById('flashcard-back').innerHTML = backHtml;
+            document.getElementById('flashcard-progress').innerText = `Card ${currentActiveIndex + 1} of ${activeFlashcards.length}`;
+            
+            const el = document.getElementById('active-flashcard');
+            el.classList.remove('is-flipped');
+            renderMath();
+        }
+
+        function flipCard() {
+            document.getElementById('active-flashcard').classList.toggle('is-flipped');
+        }
+
+        function nextCard(event) {
+            event.stopPropagation(); // prevent flipping
+            currentActiveIndex++;
+            if (currentActiveIndex >= activeFlashcards.length) currentActiveIndex = 0;
+            
+            const el = document.getElementById('active-flashcard');
+            el.classList.remove('is-flipped');
+            setTimeout(() => { loadFlashcard(); }, 300); 
+        }
+
+        // --- Mock Exam Logic ---
+        let mockQuestions = [];
+        let mockAnswers = [];
+        let mockCurrentIndex = 0;
+        let mockTimerInterval = null;
+        let mockTimeRemaining = 3 * 60 * 60;
+
+        function startMockExam() {
+            const allQs = window.appData.questions;
+            if (allQs.length < 30) {
+                alert('Not enough questions to start a mock exam (need 30).');
+                return;
+            }
+            
+            const shuffled = [...allQs].sort(() => 0.5 - Math.random());
+            mockQuestions = shuffled.slice(0, 30);
+            mockAnswers = new Array(30).fill(null);
+            mockCurrentIndex = 0;
+            mockTimeRemaining = 3 * 60 * 60;
+            
+            document.getElementById('quiz-mock-setup').style.display = 'none';
+            document.getElementById('quiz-mock-active').style.display = 'block';
+            
+            loadMockQuestion();
+            startMockTimer();
+        }
+
+        function loadMockQuestion() {
+            const q = mockQuestions[mockCurrentIndex];
+            document.getElementById('mock-question-number').innerHTML = `Question ${mockCurrentIndex + 1} of 30`;
+            document.getElementById('mock-question-text').innerHTML = q.text;
+            
+            const optionsDiv = document.getElementById('mock-options');
+            let optsHtml = '';
+            const selectedAns = mockAnswers[mockCurrentIndex];
+            
+            q.options.forEach((opt, idx) => {
+                const isSelected = selectedAns === idx;
+                optsHtml += `<button class="quiz-option ${isSelected ? 'selected' : ''}" style="${isSelected ? 'background: var(--color-primary-100); border-color: var(--color-primary-500);' : ''}" onclick="selectMockAnswer(${idx})">${opt}</button>`;
+            });
+            optionsDiv.innerHTML = optsHtml;
+            
+            document.getElementById('mock-prev-btn').disabled = (mockCurrentIndex === 0);
+            document.getElementById('mock-next-btn').disabled = (mockCurrentIndex === 29);
+            
+            renderMockGrid();
+            renderMath();
+        }
+
+        function selectMockAnswer(idx) {
+            mockAnswers[mockCurrentIndex] = idx;
+            loadMockQuestion();
+        }
+
+        function mockNextQuestion() {
+            if (mockCurrentIndex < 29) {
+                mockCurrentIndex++;
+                loadMockQuestion();
+            }
+        }
+
+        function mockPrevQuestion() {
+            if (mockCurrentIndex > 0) {
+                mockCurrentIndex--;
+                loadMockQuestion();
+            }
+        }
+        
+        function jumpToMockQuestion(idx) {
+            mockCurrentIndex = idx;
+            loadMockQuestion();
+        }
+
+        function renderMockGrid() {
+            const grid = document.getElementById('mock-grid');
+            let html = '';
+            for(let i=0; i<30; i++) {
+                const isAnswered = mockAnswers[i] !== null;
+                const isCurrent = i === mockCurrentIndex;
+                const bg = isCurrent ? 'var(--color-primary-500)' : (isAnswered ? 'var(--color-success)' : 'var(--color-bg-alt)');
+                const color = isCurrent || isAnswered ? '#fff' : 'inherit';
+                html += `<div onclick="jumpToMockQuestion(${i})" style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 4px; border: 1px solid var(--color-border); cursor: pointer; background: ${bg}; color: ${color}; font-size: 0.8rem;">${i+1}</div>`;
+            }
+            grid.innerHTML = html;
+        }
+
+        function startMockTimer() {
+            clearInterval(mockTimerInterval);
+            mockTimerInterval = setInterval(() => {
+                mockTimeRemaining--;
+                if (mockTimeRemaining <= 0) {
+                    clearInterval(mockTimerInterval);
+                    submitMockExam();
+                } else {
+                    const h = Math.floor(mockTimeRemaining / 3600).toString().padStart(2, '0');
+                    const m = Math.floor((mockTimeRemaining % 3600) / 60).toString().padStart(2, '0');
+                    const s = (mockTimeRemaining % 60).toString().padStart(2, '0');
+                    document.getElementById('mock-timer').innerText = `${h}:${m}:${s}`;
+                }
+            }, 1000);
+        }
+
+        function submitMockExam() {
+            if (mockTimeRemaining > 0) {
+                const unanswered = mockAnswers.filter(a => a === null).length;
+                if (unanswered > 0) {
+                    if (!confirm(`You have ${unanswered} unanswered questions. Are you sure you want to submit?`)) return;
+                } else {
+                    if (!confirm('Are you sure you want to submit your exam?')) return;
+                }
+            }
+            
+            clearInterval(mockTimerInterval);
+            
+            let mockScore = 0;
+            let topicData = {};
+            mockQuestions.forEach((q, idx) => {
+                if (!topicData[q.topic]) topicData[q.topic] = { correct: 0, total: 0 };
+                topicData[q.topic].total++;
+                if (mockAnswers[idx] === q.correctAnswer) {
+                    mockScore++;
+                    topicData[q.topic].correct++;
+                }
+            });
+            
+            recordQuizScore(mockScore, 30, topicData);
+            
+            document.getElementById('quiz-mock-active').style.display = 'none';
+            document.getElementById('quiz-mock-results').style.display = 'block';
+            document.getElementById('mock-final-score').innerHTML = `You scored <span style="color: var(--color-primary-500);">${mockScore}</span> out of 30.`;
+            document.getElementById('mock-review-container').style.display = 'none';
+        }
+
+        function renderMockReview() {
+            const container = document.getElementById('mock-review-container');
+            let html = '';
+            mockQuestions.forEach((q, idx) => {
+                const userAns = mockAnswers[idx];
+                const isCorrect = userAns === q.correctAnswer;
+                html += `
+                    <div style="margin-bottom: 2rem; padding: 1rem; border: 1px solid ${isCorrect ? 'var(--color-success)' : 'var(--color-error)'}; border-radius: 8px;">
+                        <h4>Question ${idx + 1} - ${isCorrect ? 'Correct ✓' : 'Incorrect ✗'}</h4>
+                        <p>${q.text}</p>
+                        <p><strong>Your Answer:</strong> ${userAns !== null ? q.options[userAns] : 'None'}</p>
+                        <p><strong>Correct Answer:</strong> ${q.options[q.correctAnswer]}</p>
+                        <div style="margin-top: 1rem; padding: 1rem; background: var(--color-bg-alt); border-radius: 4px;">
+                            <strong>Explanation:</strong><br>${q.explanation}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+            container.style.display = 'block';
+            renderMath();
+        }
+
+        // Initialize App immediately
+        document.addEventListener('DOMContentLoaded', function initApp() {
+            // Randomize options for all questions to prevent pattern bias
+            if (window.appData && window.appData.questions) {
+                window.appData.questions.forEach(q => {
+                    const correctText = q.options[q.correctAnswer];
+                    const shuffledOpts = q.options
+                        .map(opt => ({ text: opt, sortKey: Math.random() }))
+                        .sort((a, b) => a.sortKey - b.sortKey)
+                        .map(o => o.text);
+                    q.options = shuffledOpts;
+                    q.correctAnswer = shuffledOpts.indexOf(correctText);
+                });
+            }
+
+            updateDashboard();
+            renderMath();
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+/* Premium Dark Mode & Glassmorphism Design Tokens */
+/* Font loaded in HTML */
+
+:root {
+  /* Colors */
+  --color-primary-500: #3b82f6; /* Blue */
+  --color-primary-600: #2563eb;
+  --color-accent: #8b5cf6; /* Purple */
+  
+  --color-bg: #09090b; /* Deep Zinc */
+  --color-surface: rgba(24, 24, 27, 0.65); /* Translucent */
+  --color-surface-hover: rgba(39, 39, 42, 0.8);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-hover: rgba(255, 255, 255, 0.2);
+  
+  --color-text: #f4f4f5;
+  --color-text-muted: #d4d4d8;
+  
+  --color-success: #10b981;
+  --color-success-bg: rgba(16, 185, 129, 0.1);
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+  --color-error-bg: rgba(239, 68, 68, 0.1);
+
+  /* Typography */
+  --font-family-primary: 'Inter', system-ui, sans-serif;
+  
+  /* Layout & Animation */
+  --transition-fast: 150ms ease;
+  --transition-normal: 300ms ease;
+  --shadow-glow: 0 0 30px rgba(59, 130, 246, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  /* Ambient glowing background */
+  background-image: 
+    radial-gradient(circle at top right, rgba(59, 130, 246, 0.15), transparent 40%),
+    radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.15), transparent 40%);
+  background-attachment: fixed;
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  color: #fff;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+h1 { 
+  font-size: 2.25rem; 
+  background: linear-gradient(to right, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-bottom: 1px solid var(--color-border); 
+  padding-bottom: 1rem; 
+}
+h2 { font-size: 1.5rem; margin-top: 2rem; }
+
+p {
+  color: var(--color-text-muted);
+  margin-bottom: 1rem;
+}
+
+/* Header & Navigation */
+header {
+  background: rgba(9, 9, 11, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #60a5fa, #c084fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-link {
+  background: transparent;
+  color: var(--color-text-muted);
+  border: 1px solid transparent;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-radius: 999px;
+  transition: all var(--transition-fast);
+  font-weight: 500;
+}
+
+.nav-link:hover {
+  color: #fff;
+  background: var(--color-surface);
+}
+
+.nav-link.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  border-color: transparent;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+}
+
+/* Container & Cards */
+.container {
+  max-width: 1000px;
+  margin: 3rem auto;
+  padding: 0 1.5rem;
+}
+
+.card {
+  background: var(--color-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-glow);
+  margin-bottom: 2rem;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary-500), var(--color-primary-600));
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-decoration: none;
+  box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #fff;
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.btn-outline:hover:not(:disabled) {
+  background: var(--color-surface-hover);
+  border-color: var(--color-border-hover);
+  box-shadow: none;
+}
+
+.btn-success {
+  color: var(--color-success) !important;
+  border-color: var(--color-success) !important;
+}
+.btn-success:hover {
+  background: var(--color-success-bg) !important;
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  box-shadow: none;
+}
+.btn-danger:hover {
+  background: var(--color-error-bg);
+  transform: translateY(-2px);
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+  vertical-align: middle;
+  margin-left: 0.75rem;
+}
+.badge.low { background-color: var(--color-success); color: #fff; }
+.badge.topic { background-color: rgba(139, 92, 246, 0.2); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); }
+
+/* Progress Bar */
+.progress-bg {
+  width: 100%;
+  background-color: var(--color-surface-hover);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  height: 1.5rem;
+  overflow: hidden;
+  margin: 1rem 0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+}
+.progress-fill {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  height: 100%;
+  width: 0%;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 0.75rem;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+/* Grid Indices (Questions & Flashcards) */
+.index-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.index-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.index-card.mastered {
+  border-color: var(--color-success);
+  opacity: 0.75;
+}
+
+.index-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--color-primary-500);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  background: var(--color-surface-hover);
+}
+
+.index-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Quiz Specifics */
+.quiz-option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-text);
+  transition: all var(--transition-fast);
+}
+
+.quiz-option:hover:not(:disabled) {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-primary-500);
+}
+
+.quiz-option.correct {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success);
+}
+
+.quiz-option.incorrect {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error);
+}
+
+.explanation-box {
+  background: rgba(255, 255, 255, 0.03);
+  border-left: 4px solid var(--color-accent);
+  padding: 1.5rem;
+  margin-top: 2rem;
+  border-radius: 0 0.75rem 0.75rem 0;
+  display: none;
+  animation: fadeIn 0.5s;
+}
+
+/* Flashcard Specifics */
+.flashcard-container {
+  perspective: 1000px;
+  width: 100%;
+  max-width: 650px;
+  margin: 2.5rem auto;
+  height: 550px;
+}
+.flashcard {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+  cursor: pointer;
+}
+.flashcard.is-flipped {
+  transform: rotateY(180deg);
+}
+.flashcard-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  padding: 2.5rem;
+  background: #18181b;
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+  font-size: 1.15rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: #1e3a8a;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+/* MathJax Overrides for Dark Mode */
+.MathJax {
+  color: #fff !important;
+}
