@@ -49,3 +49,9 @@ The application has been heavily optimized for Lighthouse metrics and LiteSpeed 
 - **Preloaded Assets**: The `inter.css` file is preloaded natively in the HTML head.
 - **Server-Side Rules**: The `.htaccess` file enables `mod_expires` (1-month lifetimes for static assets) and `mod_deflate` (Brotli/Gzip compression).
 - **SEO/A11y**: Features Open Graph tags, a meta description, a placeholder favicon, and semantic `<main>` landmarks.
+
+## Third-Party Libraries & Licensing
+This project is designed to run 100% offline and self-hosts all necessary assets. It includes the following open-source libraries:
+- **Inter Font** - Licensed under the SIL Open Font License 1.1 (OFL)
+- **MathJax** - Licensed under the Apache License 2.0
+- **Lucide Icons** - Licensed under the ISC License
